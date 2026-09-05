@@ -25,6 +25,8 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 let currentUser = null;
+let currentActiveCourse = null;
+let pendingCourseIndex = null;
 
 // Listen for Login / Logout state changes
 onAuthStateChanged(auth, (user) => {
@@ -46,7 +48,6 @@ onAuthStateChanged(auth, (user) => {
 
 /* =========================================================
    RSAP TECH LABS — CENTRAL CONTENT TEMPLATE
-   Add, remove, or modify items directly inside this object!
    ========================================================= */
 const RSAP_CONFIG = {
   ticker: [
@@ -150,8 +151,6 @@ const RSAP_CONFIG = {
 // =========================================================
 // RENDER & DOM CONTROLLER
 // =========================================================
-let currentActiveCourse = null;
-
 function renderCourseCards(coursesToRender) {
   const courseGrid = document.getElementById("courseGrid");
   if (!courseGrid) return;
@@ -265,21 +264,15 @@ function setupCourseSearch() {
 // COURSE VIEWER CONTROLLER (MODAL & SIDEBAR)
 // =========================================================
 function openCourseViewer(courseIndex) {
-  // Authentication gate: Block access if user is not signed in
+  // If not signed in, pop open the custom dark modal
   if (!currentUser) {
-    const confirmLogin = confirm("Enrollment Access Required:\nPlease sign in with your Google account to access course modules and blueprints.");
-    if (confirmLogin) {
-      signInWithPopup(auth, provider).then(() => {
-        // Automatically open the course once successfully signed in
-        openCourseViewer(courseIndex);
-      }).catch((err) => {
-        console.error("Authentication required:", err.message);
-      });
-    }
+    pendingCourseIndex = courseIndex;
+    const authModal = document.getElementById("authGateModal");
+    if (authModal) authModal.style.display = "flex";
     return;
   }
 
-  // If signed in, load modal as usual
+  // Signed in: render course syllabus
   currentActiveCourse = courseIndex;
   const course = RSAP_CONFIG.courses[courseIndex];
   if (!course) return;
@@ -313,6 +306,7 @@ function openCourseViewer(courseIndex) {
     }
   }
 }
+
 function toggleTopicAccordion(topicIndex) {
   const list = document.getElementById(`subtopic-list-${topicIndex}`);
   const icon = document.getElementById(`accordion-icon-${topicIndex}`);
@@ -351,7 +345,7 @@ function closeCourseViewer() {
   document.body.style.overflow = "auto";
 }
 
-// Make functions accessible from HTML onclick attributes
+// Attach functions to global window for inline onclick handlers
 window.openCourseViewer = openCourseViewer;
 window.toggleTopicAccordion = toggleTopicAccordion;
 window.loadLessonContent = loadLessonContent;
@@ -374,7 +368,36 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Google Login / Logout handler
+  // Auth Gate Modal interactions
+  const authModal = document.getElementById("authGateModal");
+  const closeAuthBtn = document.getElementById("closeAuthGateBtn");
+  const modalGoogleBtn = document.getElementById("modalGoogleLoginBtn");
+
+  if (closeAuthBtn && authModal) {
+    closeAuthBtn.addEventListener("click", () => {
+      authModal.style.display = "none";
+      pendingCourseIndex = null;
+    });
+  }
+
+  if (modalGoogleBtn) {
+    modalGoogleBtn.addEventListener("click", async () => {
+      try {
+        await signInWithPopup(auth, provider);
+        if (authModal) authModal.style.display = "none";
+        
+        // Auto-open the course the user originally clicked
+        if (pendingCourseIndex !== null) {
+          openCourseViewer(pendingCourseIndex);
+          pendingCourseIndex = null;
+        }
+      } catch (err) {
+        console.error("Login failed:", err.message);
+      }
+    });
+  }
+
+  // Navbar Login / Logout handler
   const authBtn = document.getElementById("authBtn");
   if (authBtn) {
     authBtn.addEventListener("click", async () => {
@@ -395,8 +418,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeBtn = document.getElementById("closeViewerBtn");
   if (closeBtn) closeBtn.addEventListener("click", closeCourseViewer);
 
-  // Close modal when pressing the ESC key
+  // Close modals when pressing the ESC key
   window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeCourseViewer();
+    if (e.key === "Escape") {
+      closeCourseViewer();
+      if (authModal) {
+        authModal.style.display = "none";
+        pendingCourseIndex = null;
+      }
+    }
   });
 });
