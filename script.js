@@ -265,6 +265,21 @@ function setupCourseSearch() {
 // COURSE VIEWER CONTROLLER (MODAL & SIDEBAR)
 // =========================================================
 function openCourseViewer(courseIndex) {
+  // Authentication gate: Block access if user is not signed in
+  if (!currentUser) {
+    const confirmLogin = confirm("Enrollment Access Required:\nPlease sign in with your Google account to access course modules and blueprints.");
+    if (confirmLogin) {
+      signInWithPopup(auth, provider).then(() => {
+        // Automatically open the course once successfully signed in
+        openCourseViewer(courseIndex);
+      }).catch((err) => {
+        console.error("Authentication required:", err.message);
+      });
+    }
+    return;
+  }
+
+  // If signed in, load modal as usual
   currentActiveCourse = courseIndex;
   const course = RSAP_CONFIG.courses[courseIndex];
   if (!course) return;
@@ -298,7 +313,6 @@ function openCourseViewer(courseIndex) {
     }
   }
 }
-
 function toggleTopicAccordion(topicIndex) {
   const list = document.getElementById(`subtopic-list-${topicIndex}`);
   const icon = document.getElementById(`accordion-icon-${topicIndex}`);
