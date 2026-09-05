@@ -59,6 +59,87 @@ const RSAP_CONFIG = {
 
   courses: [
     {
+      id: "sap-fundamentals",
+      tag: "FOUNDATIONS",
+      badge: "Architecture & Basics",
+      title: "SAP Fundamentals & SD Overview",
+      desc: "Core concepts of ERP, 3-tier R/3 architecture, system landscape (DEV/QAS/PRD), modular integration, and version evolutions.",
+      duration: "1 Week",
+      modulesCount: "3 Modules",
+      topics: [
+        {
+          main: "1. Introduction to ERP & SAP Ecosystem",
+          subtopics: [
+            {
+              title: "What is ERP & The Role of 4 M's",
+              type: "text",
+              content: "<b>SAP</b> stands for <i>System Application & Products in Data Processing</i>.<br><br>" +
+                       "Enterprise Resource Planning (ERP) coordinates the <b>4 M's</b> across all enterprise departments:<br>" +
+                       "• <b>Machinery:</b> Plant, equipment, and manufacturing assets.<br>" +
+                       "• <b>Material:</b> Raw inventory, semi-finished goods, and finished products.<br>" +
+                       "• <b>Manpower:</b> Human capital, consultants, and workforce allocation.<br>" +
+                       "• <b>Money:</b> Financial accounting, cash flow, and cost controlling.<br><br>" +
+                       "<b>Key ERP Competitors:</b> Oracle (Financial focus), PeopleSoft / Workday (HR focus), Siebel (CRM focus), and Baan."
+            },
+            {
+              title: "Why Enterprises Prefer SAP",
+              type: "text",
+              content: "<b>1. Universal Cross-Functional Fit:</b> Delivers unified solutions across SD, MM, FI, CO, PP, and QM rather than siloed point solutions.<br>" +
+                       "<b>2. Seamless Integration:</b> Actions executed in one department (e.g., Post Goods Issue in SD/MM) automatically trigger real-time postings in Financial Accounting without manual handoffs.<br>" +
+                       "<b>3. Enterprise Data Security & Market Share:</b> Robust authorization matrix with extensive market adoption across global manufacturing and services leaders."
+            },
+            {
+              title: "Core SAP Modules & Version Evolution",
+              type: "text",
+              content: "<b>Core Modules:</b><br>" +
+                       "• <b>SD:</b> Sales & Distribution<br>" +
+                       "• <b>MM:</b> Materials Management<br>" +
+                       "• <b>FI/CO:</b> Financial Accounting & Controlling<br>" +
+                       "• <b>PP:</b> Production Planning<br>" +
+                       "• <b>QM / PM / PS:</b> Quality Management, Plant Maintenance, Project Systems<br><br>" +
+                       "<b>Version Evolution:</b> R/3 4.0 → 4.6C → 4.7 Enterprise → ERP Central Component (ECC 5.0 / 6.0 EHP 1–8) → SAP S/4HANA."
+            }
+          ]
+        },
+        {
+          main: "2. SAP Architecture & System Landscape",
+          subtopics: [
+            {
+              title: "3-Tier R/3 Architecture",
+              type: "text",
+              content: "SAP R/3 operates on a high-throughput 3-tier client/server framework:<br><br>" +
+                       "• <b>1. Presentation Layer (GUI / Fiori):</b> The user workstation or browser interface sending screen input and receiving processed output.<br>" +
+                       "• <b>2. Application Layer:</b> The processing mediator where ABAP programs, business logic, and dispatchers execute.<br>" +
+                       "• <b>3. Database Layer:</b> Central relational database storing all enterprise business tables, configuration data, and transaction logs."
+            },
+            {
+              title: "System Landscape: DEV, QAS & PRD",
+              type: "text",
+              content: "A standard enterprise SAP landscape segregates servers to safeguard business operations:<br><br>" +
+                       "• <b>Development Server (DEV):</b> Dedicated environment for consultants and developers to build configurations (SPRO) and ABAP customizations. End users have no access.<br>" +
+                       "• <b>Quality Assurance Server (QAS):</b> Staging environment where functional consultants and Core Users (domain experts) validate end-to-end business scenarios, conduct User Acceptance Testing (UAT), and verify transport requests.<br>" +
+                       "• <b>Production Server (PRD):</b> The live environment where end users process daily sales orders, deliveries, and billing documents. Functional consultants have restricted, read-only/support access to protect transaction integrity."
+            }
+          ]
+        },
+        {
+          main: "3. SAP SD Consulting & Interview Roadmap",
+          subtopics: [
+            {
+              title: "Core Functional Deliverables for Consultants",
+              type: "text",
+              content: "Mastering SD consulting requires fluency across end-to-end processes:<br>" +
+                       "• Standard Sales (Order-to-Cash), Third-Party Processing (TAS), and Individual Purchase Orders (TAB)<br>" +
+                       "• Stock Transport Orders (STO) and Intercompany Billing<br>" +
+                       "• Condition Technique & Pricing Procedure Determination<br>" +
+                       "• Credit Management, Availability Checks (ATP), and Output Determination<br>" +
+                       "• Functional Specification (FS) drafting, Gap Analysis, User Exits, and Cutover Activities."
+            }
+          ]
+        }
+      ]
+    },
+    {
       id: "sap-sd",
       tag: "ENTERPRISE ERP",
       badge: "Hands-on S/4 HANA",
