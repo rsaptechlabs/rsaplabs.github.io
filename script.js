@@ -261,14 +261,17 @@ function setupCourseSearch() {
 }
 
 // =========================================================
-// COURSE VIEWER CONTROLLER (MODAL & SIDEBAR)
+// COURSE VIEWER & AUTH MODAL CONTROLLERS
 // =========================================================
 function openCourseViewer(courseIndex) {
-  // If not signed in, pop open the custom dark modal
+  // If not signed in, display the auth gate modal
   if (!currentUser) {
     pendingCourseIndex = courseIndex;
     const authModal = document.getElementById("authGateModal");
-    if (authModal) authModal.style.display = "flex";
+    if (authModal) {
+      authModal.style.display = "flex";
+      authModal.classList.add("active");
+    }
     return;
   }
 
@@ -277,26 +280,33 @@ function openCourseViewer(courseIndex) {
   const course = RSAP_CONFIG.courses[courseIndex];
   if (!course) return;
 
-  document.getElementById("viewerTitle").innerText = course.title;
+  const viewerTitle = document.getElementById("viewerTitle");
+  if (viewerTitle) viewerTitle.innerText = course.title;
 
   const sidebar = document.getElementById("sidebarTopics");
-  sidebar.innerHTML = course.topics.map((topic, tIdx) => `
-    <div class="topic-group">
-      <div class="topic-title" onclick="toggleTopicAccordion(${tIdx})">
-        <span>${topic.main}</span>
-        <span id="accordion-icon-${tIdx}">+</span>
+  if (sidebar) {
+    sidebar.innerHTML = course.topics.map((topic, tIdx) => `
+      <div class="topic-group">
+        <div class="topic-title" onclick="toggleTopicAccordion(${tIdx})">
+          <span>${topic.main}</span>
+          <span id="accordion-icon-${tIdx}">+</span>
+        </div>
+        <ul class="subtopic-list" id="subtopic-list-${tIdx}">
+          ${topic.subtopics.map((sub, sIdx) => `
+            <li class="subtopic-item" id="sub-item-${tIdx}-${sIdx}" onclick="loadLessonContent(${tIdx}, ${sIdx})">
+              ${sub.title}
+            </li>
+          `).join("")}
+        </ul>
       </div>
-      <ul class="subtopic-list" id="subtopic-list-${tIdx}">
-        ${topic.subtopics.map((sub, sIdx) => `
-          <li class="subtopic-item" id="sub-item-${tIdx}-${sIdx}" onclick="loadLessonContent(${tIdx}, ${sIdx})">
-            ${sub.title}
-          </li>
-        `).join("")}
-      </ul>
-    </div>
-  `).join("");
+    `).join("");
+  }
 
-  document.getElementById("viewerModal").classList.add("active");
+  const viewerModal = document.getElementById("viewerModal");
+  if (viewerModal) {
+    viewerModal.style.display = "flex";
+    viewerModal.classList.add("active");
+  }
   document.body.style.overflow = "hidden";
 
   if (course.topics.length > 0) {
@@ -324,6 +334,7 @@ function loadLessonContent(topicIndex, subIndex) {
 
   const lesson = RSAP_CONFIG.courses[currentActiveCourse].topics[topicIndex].subtopics[subIndex];
   const targetArea = document.getElementById("viewerArticle");
+  if (!targetArea) return;
 
   let mediaHtml = "";
   if (lesson.type === "video" && lesson.mediaUrl) {
@@ -341,24 +352,38 @@ function loadLessonContent(topicIndex, subIndex) {
 }
 
 function closeCourseViewer() {
-  document.getElementById("viewerModal").classList.remove("active");
+  const viewer = document.getElementById("viewerModal");
+  if (viewer) {
+    viewer.classList.remove("active");
+    viewer.style.display = "none";
+  }
   document.body.style.overflow = "auto";
 }
 
-// Attach functions to global window for inline onclick handlers
+function closeAuthGateModal() {
+  const authModal = document.getElementById("authGateModal");
+  if (authModal) {
+    authModal.classList.remove("active");
+    authModal.style.display = "none";
+  }
+  pendingCourseIndex = null;
+}
+
+// Make functions accessible from HTML inline handlers
 window.openCourseViewer = openCourseViewer;
 window.toggleTopicAccordion = toggleTopicAccordion;
 window.loadLessonContent = loadLessonContent;
 window.closeCourseViewer = closeCourseViewer;
+window.closeAuthGateModal = closeAuthGateModal;
 
-// =========================================================
-// EVENT LISTENERS & BOOTSTRAP
-// =========================================================
+/* =========================================================
+   EVENT LISTENERS & BOOTSTRAP
+   ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
   renderHomePage();
   setupCourseSearch();
 
-  // Mobile menu toggle
+  // Mobile navigation toggle
   const menuBtn = document.getElementById("menuBtn");
   const navLinks = document.getElementById("navLinks");
   if (menuBtn && navLinks) {
@@ -369,30 +394,26 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Auth Gate Modal interactions
-  const authModal = document.getElementById("authGateModal");
   const closeAuthBtn = document.getElementById("closeAuthGateBtn");
   const modalGoogleBtn = document.getElementById("modalGoogleLoginBtn");
 
-  if (closeAuthBtn && authModal) {
-    closeAuthBtn.addEventListener("click", () => {
-      authModal.style.display = "none";
-      pendingCourseIndex = null;
-    });
+  if (closeAuthBtn) {
+    closeAuthBtn.addEventListener("click", closeAuthGateModal);
   }
 
   if (modalGoogleBtn) {
     modalGoogleBtn.addEventListener("click", async () => {
       try {
         await signInWithPopup(auth, provider);
-        if (authModal) authModal.style.display = "none";
-        
-        // Auto-open the course the user originally clicked
+        closeAuthGateModal();
+
+        // If user was attempting to view a course, open it automatically
         if (pendingCourseIndex !== null) {
           openCourseViewer(pendingCourseIndex);
           pendingCourseIndex = null;
         }
       } catch (err) {
-        console.error("Login failed:", err.message);
+        console.error("Authentication failed:", err.message);
       }
     });
   }
@@ -416,16 +437,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Close viewer button
   const closeBtn = document.getElementById("closeViewerBtn");
-  if (closeBtn) closeBtn.addEventListener("click", closeCourseViewer);
+  if (closeBtn) {
+    closeBtn.addEventListener("click", closeCourseViewer);
+  }
 
-  // Close modals when pressing the ESC key
+  // Close active modals on Escape key
   window.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       closeCourseViewer();
-      if (authModal) {
-        authModal.style.display = "none";
-        pendingCourseIndex = null;
-      }
+      closeAuthGateModal();
     }
   });
 });
