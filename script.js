@@ -349,6 +349,8 @@ function loadLessonContent(topicIndex, subIndex) {
     ${mediaHtml}
     <p>${lesson.content}</p>
   `;
+  // ADD THIS LINE: Resets the scroll position to the top for each new lesson
+  document.querySelector(".viewer-main")?.scrollTo({ top: 0, behavior: "instant" });
 }
 
 function closeCourseViewer() {
