@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="RSAP TECH LABS — SAP Training & Real-Time Job Support." />
+  <title>RSAP TECH LABS | Training & Job Support</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <header class="navbar" id="navbar">
+    <div class="container nav-inner">
+      <a class="brand" href="#">
+        <span class="logo">RS</span>
+        <span>RSAP TECH LABS</span>
+      </a>
+
+      <!-- Visible Search Bar Container -->
+      <div class="nav-search-box">
+        <span class="search-icon">🔍</span>
+        <input 
+          type="text" 
+          id="courseSearchInput" 
+          placeholder="Search SAP, Pricing, Cloud, APIs..." 
+          autocomplete="off" 
+        />
+      </div>
+
+      <button class="menu-toggle" id="menuBtn" aria-label="Toggle navigation">☰</button>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="#courses">Courses</a>
+        <a href="#support">Job Support</a>
+        <a href="#workflow">How It Works</a>
+      <a class="btn-ghost-nav" href="#contact">Get Help</a>
+        <!-- Auth Button / Profile -->
+        <button class="btn btn-primary" id="authBtn" style="padding: 7px 18px; font-size: 13px;">Login with Google</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Live Marquee Ticker -->
+  <div class="updates-bar">
+    <div class="ticker" id="tickerTrack"></div>
+  </div>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container hero-content">
+        <div class="eyebrow"><span class="dot"></span> SAP Training & Job Support</div>
+        <h1>MASTER ENTERPRISE.<br><span>CRUSH YOUR WORKPLACE</span><br>DELIVERABLES.</h1>
+        <p>Comprehensive hands-on training tracks combined with 1-on-1 confidential screen share mentoring to help you resolve project blockers, client tickets, and sprint tasks.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#courses">Explore Courses →</a>
+          <a class="btn btn-ghost" href="#support">Get Job Support</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Metrics Strip -->
+    <section class="metrics-bar">
+      <div class="container metrics-grid">
+        <div class="metric-item">
+          <div class="metric-value">100<b>%</b></div>
+          <div class="metric-label">Scenario-Based Labs</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value">1<b>:</b>1</div>
+          <div class="metric-label">Confidential Mentorship</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value">24<b>h</b></div>
+          <div class="metric-label">Rapid Debugging Turnaround</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value">50<b>+</b></div>
+          <div class="metric-label">Enterprise Runbooks & Specs</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section id="courses" class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="tag">Flagship Tracks</span>
+          <h2>Hands-On Training Modules.</h2>
+          <p>Click any course card to open the interactive syllabus viewer, videos, and architecture diagrams.</p>
+        </div>
+        <div class="cards-grid" id="courseGrid"></div>
+      </div>
+    </section>
+
+    <!-- Support Section -->
+    <section id="support" class="section section-alt">
+      <div class="container">
+        <div class="section-head">
+          <span class="tag">Direct Assistance</span>
+          <h2>Real-Time Job Support.</h2>
+          <p>Confidential, live screen-sharing to diagnose complex bugs, configure solutions, and unblock your sprint backlog.</p>
+        </div>
+        <div class="cards-grid" id="supportGrid"></div>
+      </div>
+    </section>
+
+    <!-- Workflow Section -->
+    <section id="workflow" class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="tag">Operational Flow</span>
+          <h2>How Job Support Works.</h2>
+          <p>A fast, structured pipeline designed around strict workplace privacy and sprint schedules.</p>
+        </div>
+        <div class="workflow-grid">
+          <div class="workflow-card">
+            <span class="step-badge">STEP 01</span>
+            <h3>Submit Blocker</h3>
+            <p>Send an overview of the issue, requirement specification, or functional error code you need help solving.</p>
+          </div>
+          <div class="workflow-card">
+            <span class="step-badge">STEP 02</span>
+            <h3>1:1 Screen Share</h3>
+            <p>Connect over a private screen-sharing session to troubleshoot, test in a sandbox, and formulate the exact fix.</p>
+          </div>
+          <div class="workflow-card">
+            <span class="step-badge">STEP 03</span>
+            <h3>Deploy Confidently</h3>
+            <p>Implement the verified solution in your project environment with complete documentation ready for review.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="contact" class="section cta-section">
+      <div class="container">
+        <div class="cta-card">
+          <span class="tag">Confidential Assistance</span>
+          <h2>Stuck on a Project Deliverable?</h2>
+          <p>Connect with a senior enterprise consultant to review your current blockers or set up a tailored learning plan.</p>
+          <div class="cta-actions">
+            <a class="btn btn-primary" href="mailto:support@rsaptechlabs.com?subject=Mentorship%20Inquiry">Email Support Directly →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================= -->
+  <!-- COURSE CONTENT VIEWER (Modal with Collapsible Sidebar)    -->
+  <!-- ========================================================= -->
+  <div class="viewer-modal" id="viewerModal">
+    <div class="viewer-topbar">
+      <h3 id="viewerTitle">Course Syllabus</h3>
+      <button class="btn btn-ghost" id="closeViewerBtn" style="padding: 6px 14px;">Close ✕</button>
+    </div>
+    <div class="viewer-layout">
+      <aside class="viewer-sidebar" id="sidebarTopics"></aside>
+      <section class="viewer-main">
+        <div class="viewer-article" id="viewerArticle"></div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="brand">
+            <span class="logo">RS</span>
+            <span>RSAP TECH LABS</span>
+          </div>
+          <p class="footer-desc">Practical enterprise IT training and confidential workplace job support for consulting professionals.</p>
+        </div>
+        <div>
+          <h4>SUPPORT OFFERINGS</h4>
+          <ul>
+            <li>Ticket Troubleshooting</li>
+            <li>Functional Spec Drafting</li>
+            <li>System Configuration</li>
+            <li>Mock Project Interviews</li>
+          </ul>
+        </div>
+        <div>
+          <h4>CONTACT</h4>
+          <ul>
+            <li class="contact-highlight">support@rsaptechlabs.com</li>
+            <li>Mon – Sat: Flexible Shift Alignments</li>
+            <li>Strict Non-Disclosure Protected</li>
+          </ul>
+        </div>
+      </div>
+      <div class="copyright">
+        <span>© 2026 RSAP TECH LABS. All rights reserved.</span>
+        <span>Confidential & Secure</span>
+      </div>
+    </div>
+  </footer>
+
+<script type="module" src="script.js"></script>
+</body>
+</html>
