@@ -316,7 +316,6 @@ footer ul { list-style: none; display: grid; gap: 8px; font-size: 13px; color: v
   .viewer-article p { font-size: 14px; }
   .auth-gate-box { padding: 30px 20px; }
 }
-
 @media (max-width: 430px) {
   .nav-search-box input { padding-right: 8px; }
   .nav-search-box input::placeholder { color: transparent; }
@@ -330,4 +329,20 @@ footer ul { list-style: none; display: grid; gap: 8px; font-size: 13px; color: v
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* Ensure single R stays centered at all screen sizes */
+.logo {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.logo span {
+  position: static !important;
+  transform: none !important;
+  font-size: 16px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  opacity: 1 !important;
 }
