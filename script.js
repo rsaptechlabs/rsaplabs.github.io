@@ -9,6 +9,11 @@ import {
   signOut, 
   onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAWm0HzLbeZCjFJxpsnTa7AJmmB6b1Z4ZM",
@@ -22,6 +27,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
 let currentUser = null;
@@ -38,7 +44,6 @@ onAuthStateChanged(auth, (user) => {
     const firstName = user.displayName ? user.displayName.split(" ")[0] : "User";
     authBtn.innerHTML = `Sign Out (${firstName})`;
     authBtn.classList.replace("btn-primary", "btn-ghost");
-    console.log("Logged in user UID:", user.uid);
   } else {
     currentUser = null;
     authBtn.innerText = "Login with Google";
@@ -246,6 +251,9 @@ function renderCourseCards(coursesToRender) {
     return;
   }
 
+  const resultCount = document.getElementById("courseResultCount");
+  if (resultCount) resultCount.textContent = `${String(coursesToRender.length).padStart(2,"0")} learning track${coursesToRender.length === 1 ? "" : "s"}`;
+
   courseGrid.innerHTML = coursesToRender.map((course) => {
     const originalIndex = RSAP_CONFIG.courses.findIndex(c => c.id === course.id);
     return `
@@ -273,17 +281,14 @@ function renderCourseCards(coursesToRender) {
 }
 
 function renderHomePage() {
-  // 1. Marquee Ticker
   const tickerContainer = document.getElementById("tickerTrack");
   if (tickerContainer) {
     const tickerItems = RSAP_CONFIG.ticker.map(item => `<span>⚡ <b>Update:</b> ${item}</span>`).join("");
     tickerContainer.innerHTML = tickerItems + tickerItems;
   }
 
-  // 2. Initial Courses Render
   renderCourseCards(RSAP_CONFIG.courses);
 
-  // 3. Support Cards
   const supportGrid = document.getElementById("supportGrid");
   if (supportGrid) {
     supportGrid.innerHTML = RSAP_CONFIG.supportPlans.map(plan => `
@@ -327,25 +332,100 @@ function setupCourseSearch() {
 
       const matchTopics = course.topics.some(topic => 
         topic.main.toLowerCase().includes(query) ||
-        topic.subtopics.some(sub => sub.title.toLowerCase().includes(query))
+        topic.subtopics.some(sub => sub.title.toLowerCase().includes(query) || (sub.content || "").toLowerCase().includes(query))
       );
+      const matchBadge = course.badge.toLowerCase().includes(query);
 
-      return matchTitle || matchDesc || matchTag || matchTopics;
+      return !query || matchTitle || matchDesc || matchTag || matchTopics || matchBadge;
     });
 
     renderCourseCards(filtered);
 
     if (query.length === 1) {
-      document.getElementById("courses")?.scrollIntoView({ behavior: "smooth" });
+      document.getElementById("courses")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
+  });
+
+  searchInput.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      searchInput.value = "";
+      renderCourseCards(RSAP_CONFIG.courses);
+      searchInput.blur();
+    }
+    if (e.key === "Enter") document.getElementById("courses")?.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 }
 
 // =========================================================
-// COURSE VIEWER & AUTH MODAL CONTROLLERS
+// AUTHENTICATION & ADMIN WHITELIST GATEKEEPER
+// =========================================================
+async function verifyUserAuthorization(user) {
+  if (!user || !user.email) return { authorized: false };
+  const emailKey = user.email.toLowerCase().trim();
+  const userDocRef = doc(db, "allowed_users", emailKey);
+
+  try {
+    const docSnap = await getDoc(userDocRef);
+    if (docSnap.exists() && docSnap.data().status === "approved") {
+      return { authorized: true, data: docSnap.data() };
+    }
+    return { authorized: false };
+  } catch (error) {
+    console.error("Whitelist check error:", error);
+    return { authorized: false };
+  }
+}
+
+async function handleGoogleLogin() {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    const authCheck = await verifyUserAuthorization(user);
+
+    if (!authCheck.authorized) {
+      const attemptedEmail = user.email;
+      await signOut(auth);
+
+      const emailPlaceholder = document.getElementById("deniedUserEmail");
+      if (emailPlaceholder) emailPlaceholder.innerText = attemptedEmail;
+
+      closeAuthGateModal();
+      const deniedModal = document.getElementById("accessDeniedModal");
+      if (deniedModal) {
+        deniedModal.style.display = "flex";
+        deniedModal.classList.add("active");
+      }
+      return;
+    }
+
+    closeAuthGateModal();
+
+    if (pendingCourseIndex !== null) {
+      openCourseViewer(pendingCourseIndex);
+      pendingCourseIndex = null;
+    }
+
+  } catch (err) {
+    if (err.code !== "auth/popup-closed-by-user") {
+      console.error("Login process error:", err);
+      alert("Authentication error: " + err.message);
+    }
+  }
+}
+
+function closeAccessDeniedModal() {
+  const modal = document.getElementById("accessDeniedModal");
+  if (modal) {
+    modal.classList.remove("active");
+    modal.style.display = "none";
+  }
+}
+
+// =========================================================
+// COURSE VIEWER CONTROLLERS
 // =========================================================
 function openCourseViewer(courseIndex) {
-  // If not signed in, display the auth gate modal
   if (!currentUser) {
     pendingCourseIndex = courseIndex;
     const authModal = document.getElementById("authGateModal");
@@ -356,7 +436,6 @@ function openCourseViewer(courseIndex) {
     return;
   }
 
-  // Signed in: render course syllabus
   currentActiveCourse = courseIndex;
   const course = RSAP_CONFIG.courses[courseIndex];
   if (!course) return;
@@ -430,7 +509,7 @@ function loadLessonContent(topicIndex, subIndex) {
     ${mediaHtml}
     <p>${lesson.content}</p>
   `;
-  // ADD THIS LINE: Resets the scroll position to the top for each new lesson
+
   document.querySelector(".viewer-main")?.scrollTo({ top: 0, behavior: "instant" });
 }
 
@@ -452,12 +531,13 @@ function closeAuthGateModal() {
   pendingCourseIndex = null;
 }
 
-// Make functions accessible from HTML inline handlers
+// Global attachments for inline event handlers
 window.openCourseViewer = openCourseViewer;
 window.toggleTopicAccordion = toggleTopicAccordion;
 window.loadLessonContent = loadLessonContent;
 window.closeCourseViewer = closeCourseViewer;
 window.closeAuthGateModal = closeAuthGateModal;
+window.closeAccessDeniedModal = closeAccessDeniedModal;
 
 /* =========================================================
    EVENT LISTENERS & BOOTSTRAP
@@ -466,69 +546,58 @@ document.addEventListener("DOMContentLoaded", () => {
   renderHomePage();
   setupCourseSearch();
 
-  // Mobile navigation toggle
   const menuBtn = document.getElementById("menuBtn");
   const navLinks = document.getElementById("navLinks");
   if (menuBtn && navLinks) {
-    menuBtn.addEventListener("click", () => navLinks.classList.toggle("open"));
-    navLinks.querySelectorAll("a").forEach(link => {
-      link.addEventListener("click", () => navLinks.classList.remove("open"));
+    menuBtn.addEventListener("click", () => {
+      const open = navLinks.classList.toggle("open");
+      menuBtn.setAttribute("aria-expanded", String(open));
+    });
+    navLinks.querySelectorAll("a, button").forEach(link => {
+      link.addEventListener("click", () => {
+        navLinks.classList.remove("open");
+        menuBtn.setAttribute("aria-expanded", "false");
+      });
     });
   }
 
-  // Auth Gate Modal interactions
   const closeAuthBtn = document.getElementById("closeAuthGateBtn");
   const modalGoogleBtn = document.getElementById("modalGoogleLoginBtn");
 
-  if (closeAuthBtn) {
-    closeAuthBtn.addEventListener("click", closeAuthGateModal);
-  }
+  if (closeAuthBtn) closeAuthBtn.addEventListener("click", closeAuthGateModal);
+  if (modalGoogleBtn) modalGoogleBtn.addEventListener("click", handleGoogleLogin);
 
-  if (modalGoogleBtn) {
-    modalGoogleBtn.addEventListener("click", async () => {
-      try {
-        await signInWithPopup(auth, provider);
-        closeAuthGateModal();
-
-        // If user was attempting to view a course, open it automatically
-        if (pendingCourseIndex !== null) {
-          openCourseViewer(pendingCourseIndex);
-          pendingCourseIndex = null;
-        }
-      } catch (err) {
-        console.error("Authentication failed:", err.message);
-      }
-    });
-  }
-
-  // Navbar Login / Logout handler
   const authBtn = document.getElementById("authBtn");
   if (authBtn) {
     authBtn.addEventListener("click", async () => {
       if (currentUser) {
         await signOut(auth);
       } else {
-        try {
-          await signInWithPopup(auth, provider);
-        } catch (error) {
-          console.error("Login failed:", error.message);
-          alert("Login error: " + error.message);
-        }
+        await handleGoogleLogin();
       }
     });
   }
 
-  // Close viewer button
-  const closeBtn = document.getElementById("closeViewerBtn");
-  if (closeBtn) {
-    closeBtn.addEventListener("click", closeCourseViewer);
-  }
+  ["viewerModal", "authGateModal", "accessDeniedModal"].forEach(id => {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) {
+        if (id === "viewerModal") closeCourseViewer();
+        else if (id === "authGateModal") closeAuthGateModal();
+        else if (id === "accessDeniedModal") closeAccessDeniedModal();
+      }
+    });
+  });
 
-  // Close active modals on Escape key
+  const closeBtn = document.getElementById("closeViewerBtn");
+  if (closeBtn) closeBtn.addEventListener("click", closeCourseViewer);
+
   window.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       closeCourseViewer();
       closeAuthGateModal();
+      closeAccessDeniedModal();
     }
   });
 });
