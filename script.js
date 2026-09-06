@@ -366,8 +366,13 @@ async function verifyUserAuthorization(user) {
 
   try {
     const docSnap = await getDoc(userDocRef);
-    if (docSnap.exists() && docSnap.data().status === "approved") {
-      return { authorized: true, data: docSnap.data() };
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      // Accepts lowercase or capitalized status ('approved' or 'Approved')
+      const statusValue = (data.status || data.Status || "").toLowerCase();
+      if (statusValue === "approved") {
+        return { authorized: true, data };
+      }
     }
     return { authorized: false };
   } catch (error) {

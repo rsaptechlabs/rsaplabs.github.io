@@ -12,6 +12,39 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
+<!-- Admin Whitelist Manager Modal -->
+<div id="adminPanelModal" class="modal-backdrop">
+  <div class="auth-gate-box" style="max-width: 520px; text-align: left;">
+    <button class="close-btn" onclick="closeAdminPanel()">&times;</button>
+    <div class="tag" style="margin-bottom: 10px;">SUPERUSER ACCESS</div>
+    <h2 style="font-size: 20px; color: #fff; margin-bottom: 6px;">Candidate Authorization</h2>
+    <p style="font-size: 13px; color: var(--muted); margin-bottom: 20px;">
+      Add a candidate's Gmail to grant immediate access to courses and curriculum runbooks.
+    </p>
+
+    <form id="adminAddUserForm" style="display: flex; gap: 10px; margin-bottom: 20px;">
+      <input 
+        type="email" 
+        id="newCandidateEmail" 
+        placeholder="candidate@gmail.com" 
+        required 
+        style="flex: 1; background: rgba(15,29,49,.85); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; color: #fff; font-size: 13px; outline: none;"
+      />
+      <button type="submit" class="btn btn-primary" style="padding: 10px 16px; font-size: 13px; white-space: nowrap;">
+        + Authorize
+      </button>
+    </form>
+
+    <div id="adminActionMsg" style="font-size: 12.5px; margin-bottom: 12px; display: none;"></div>
+
+    <h4 style="font-size: 12px; letter-spacing: .08em; color: var(--muted); text-transform: uppercase; margin-bottom: 10px;">
+      Recent Whitelist Entries
+    </h4>
+    <div id="whitelistContainer" style="max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-size: 13px; color: var(--muted);">Loading authorized users...</div>
+    </div>
+  </div>
+</div>
 <body>
 
   <!-- Top Navbar -->
