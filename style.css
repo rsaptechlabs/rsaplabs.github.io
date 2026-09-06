@@ -376,37 +376,211 @@ footer ul { list-style: none; display: grid; gap: 8px; font-size: 13.5px; color:
 .copyright { border-top: 1px solid var(--line); padding-top: 20px; display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; }
 
 /* ========================================================= */
-/* RESPONSIVE BREAKPOINTS                                    */
+/* COMPREHENSIVE RESPONSIVE DESIGN (TABLETS & MOBILE)        */
 /* ========================================================= */
-@media(max-width: 880px) {
+
+/* --- TABLETS & SMALL LAPTOPS (Max 1024px) --- */
+@media (max-width: 1024px) {
+  .container {
+    width: min(100% - 32px, var(--max));
+  }
+
+  .viewer-sidebar {
+    width: 280px;
+  }
+
+  .viewer-main {
+    padding: 24px 28px;
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .workflow-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* --- MOBILE DEVICES & SMALL TABLETS (Max 768px) --- */
+@media (max-width: 768px) {
+  /* 1. Header & Mobile Navigation */
+  .nav-inner {
+    height: 64px;
+    position: relative;
+  }
+
+  .brand span:last-child {
+    font-size: 14px;
+  }
+
+  /* Compact Navbar Search Bar */
   .nav-search-box {
-    order: 2;
     flex: 1;
-    margin: 0 8px;
-    min-width: 140px;
+    min-width: 0;
+    margin: 0 10px;
   }
+
+  .nav-search-box input {
+    padding: 6px 12px 6px 32px;
+    font-size: 12px;
+  }
+
+  .nav-search-box .search-icon {
+    left: 10px;
+    font-size: 12px;
+  }
+
   .menu-toggle {
-    order: 3;
     display: block;
+    font-size: 22px;
+    padding: 4px 8px;
   }
-  .nav-links { 
-    display: none; 
-    position: absolute; 
-    top: 72px; 
-    left: 16px; 
-    right: 16px; 
-    background: var(--surface); 
-    border: 1px solid var(--line); 
-    border-radius: 14px; 
-    padding: 18px; 
-    flex-direction: column; 
-    align-items: stretch;
+
+  /* Slide-Down Mobile Drawer */
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding: 20px;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
   }
-  .nav-links.open { display: flex; }
-  .metrics-grid { grid-template-columns: repeat(2, 1fr); }
-  .workflow-grid { grid-template-columns: 1fr; }
-  .viewer-layout { flex-direction: column; }
-  .viewer-sidebar { width: 100%; max-height: 220px; }
-  .viewer-main { padding: 20px; }
-  .footer-grid { grid-template-columns: 1fr; }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-links a,
+  .nav-links button {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* 2. Marquee Ticker Adjustment */
+  .updates-bar {
+    top: 64px;
+    height: 32px;
+  }
+
+  .ticker span {
+    font-size: 11px;
+    padding: 0 16px;
+  }
+
+  /* 3. Hero Section */
+  .hero {
+    min-height: auto;
+    padding: 130px 0 60px;
+  }
+
+  h1 {
+    font-size: clamp(28px, 8vw, 42px);
+    line-height: 1.15;
+  }
+
+  .hero p {
+    font-size: 14.5px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+  }
+
+  /* 4. Grid Adjustments */
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .workflow-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .metric-value {
+    font-size: 28px;
+  }
+
+  .metric-label {
+    font-size: 12px;
+  }
+
+  /* 5. Course Viewer (Stack Sidebar Above Content) */
+  .viewer-topbar {
+    height: auto;
+    min-height: 56px;
+    padding: 10px 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .viewer-topbar h3 {
+    font-size: 14px !important;
+  }
+
+  .viewer-layout {
+    flex-direction: column;
+    height: calc(100vh - 56px);
+  }
+
+  .viewer-sidebar {
+    width: 100%;
+    max-height: 35vh; /* Gives candidate scrollable menu without taking whole screen */
+    border-right: none;
+    border-bottom: 2px solid var(--line);
+    flex-shrink: 0;
+  }
+
+  .viewer-main {
+    flex: 1;
+    padding: 20px 16px;
+  }
+
+  .viewer-article h2 {
+    font-size: 20px;
+  }
+
+  .viewer-article p {
+    font-size: 14px;
+  }
+
+  /* 6. Modals (Auth & Forms) */
+  .auth-gate-box {
+    padding: 24px 18px;
+    margin: 10px;
+  }
+
+  .cta-card {
+    padding: 36px 16px;
+  }
+
+  footer {
+    padding: 40px 0 20px;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .copyright {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
 }
