@@ -368,3 +368,62 @@ footer ul { list-style: none; display: grid; gap: 8px; font-size: 13px; color: v
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+/* Hard Reset for Brand & Logo */
+.brand {
+  position: relative !important;
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 12px !important;
+  text-decoration: none !important;
+  flex-shrink: 0 !important;
+}
+
+.logo {
+  position: relative !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: linear-gradient(135deg, var(--accent), var(--accent2)) !important;
+  color: #04101d !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  box-shadow: 0 0 24px var(--accent-glow) !important;
+  flex-shrink: 0 !important;
+  text-align: center !important;
+}
+
+.logo span {
+  position: static !important;
+  transform: none !important;
+}
+
+.brand-copy {
+  position: static !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  line-height: 1.15 !important;
+}
+
+.brand-copy strong {
+  position: static !important;
+  font-size: 15px !important;
+  font-weight: 850 !important;
+  color: #ffffff !important;
+  letter-spacing: -0.01em !important;
+}
+
+.brand-copy small {
+  position: static !important;
+  font-size: 8.5px !important;
+  color: var(--accent) !important;
+  letter-spacing: 0.22em !important;
+  font-weight: 700 !important;
+  margin-top: 2px !important;
+}
