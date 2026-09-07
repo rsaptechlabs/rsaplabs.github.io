@@ -64,6 +64,181 @@ const RSAP_CONFIG = {
 
   courses: [
     {
+  id: "sap-sd-techno-functional",
+  tag: "LEVEL 3 • TECHNO-FUNCTIONAL",
+  badge: "60-Day Consultant Track",
+  title: "SAP SD Functional & Technical Consultant Course",
+  desc: "End-to-end Order-to-Cash (OTC) implementation: SPRO configuration, pricing procedures, SD-MM-FI integration, database architecture (VBAK/VBAP), user exits, and ABAP debugging.",
+  duration: "60 Days",
+  modulesCount: "7 Modules",
+  topics: [
+    {
+      main: "Module 1: Enterprise Structure & Master Data (Functional + Tables)",
+      subtopics: [
+        {
+          title: "SPRO Org Hierarchy & Customizing",
+          type: "text",
+          content: "<b>Functional Customizing:</b><br>" +
+                   "• Define Sales Organization, Distribution Channel, Division, and Sales Area.<br>" +
+                   "• Assign Delivering Plant to Sales Organization and Distribution Channel.<br>" +
+                   "• Setup Shipping Points and loading storage locations.<br><br>" +
+                   "<b>Technical Architecture:</b><br>" +
+                   "• Enterprise structure definition tables: <code>TVKO</code> (Sales Org), <code>TVTW</code> (Dist. Channel), <code>TSPA</code> (Division).<br>" +
+                   "• Assignment mapping tables: <code>TVKOV</code> (Sales Org to Dist. Channel), <code>TVKOS</code> (Sales Org to Division)."
+        },
+        {
+          title: "Business Partner (BP/CVI) & Material Master",
+          type: "text",
+          content: "<b>Functional Business Rules:</b><br>" +
+                   "• Setup Business Partner (BP) roles: General, FLCU00 (FI Customer), and FLCU01 (Sales Customer).<br>" +
+                   "• Mandatory partner roles: SP (Sold-To), SH (Ship-To), BP (Bill-To), PY (Payer).<br>" +
+                   "• Configure Sales Views in Material Master: Sales Org 1/2 and General/Plant.<br><br>" +
+                   "<b>Technical Architecture:</b><br>" +
+                   "• Master tables: <code>BUT000</code> (BP General Data), <code>KNA1</code> (Customer Master General), <code>KNVV</code> (Sales Area Data), <code>KNVP</code> (Partner Functions).<br>" +
+                   "• Material tables: <code>MARA</code> (General), <code>MARC</code> (Plant Data), <code>MVKE</code> (Sales Data)."
+        }
+      ]
+    },
+    {
+      main: "Module 2: Sales Document & Item Category Control (Logic & Data Model)",
+      subtopics: [
+        {
+          title: "Document Type (VOV8) & Item Category (VOV7/VOV4)",
+          type: "text",
+          content: "<b>Functional Customizing:</b><br>" +
+                   "• Configure standard Sales Document Types (OR, QT, IN). Control credit checks, number ranges, and shipping blocks.<br>" +
+                   "• Item Category Determination Formula: <code>Doc Type + Item Cat Group + Usage + Higher-Level Item Cat = Item Category</code>.<br>" +
+                   "• Configure Item Category settings: Billing relevance, pricing active, item credit active.<br><br>" +
+                   "<b>Technical Data Model:</b><br>" +
+                   "• Sales document header: <code>VBAK</code> | Sales document line items: <code>VBAP</code>.<br>" +
+                   "• Configuration tables: <code>TVAK</code> (Document Types), <code>TVAP</code> (Item Categories), <code>T184</code> (Item Determination)."
+        },
+        {
+          main: "Schedule Line Determination & Availability Check",
+          title: "Schedule Line Category (VOV6/VOV5)",
+          type: "text",
+          content: "<b>Functional Logic:</b><br>" +
+                   "• Configure delivery block triggers, requirement transmission (TOR), and availability check (ATP).<br>" +
+                   "• Determination: <code>Item Category + MRP Type = Schedule Line Category</code>.<br><br>" +
+                   "<b>Technical Tables:</b><br>" +
+                   "• Schedule line data: <code>VBEP</code>.<br>" +
+                   "• Configuration: <code>TVEP</code> (Schedule Lines), <code>TVEPZ</code> (Determination table)."
+        }
+      ]
+    },
+    {
+      main: "Module 3: Pricing Condition Technique & 16-Field Logic",
+      subtopics: [
+        {
+          title: "Pricing Procedure & Condition Records",
+          type: "text",
+          content: "<b>Functional Mechanics:</b><br>" +
+                   "• Condition Technique Triad: Condition Table → Access Sequence → Condition Type (e.g., PR00, K004, MWST).<br>" +
+                   "• Master the 16 fields: Step, Counter, Condition Type, From, To, Manual, Mandatory, Statistical, Print, Subtotal, Requirement Routine, Calctype, Basetype, Account Key, Accrual Key.<br>" +
+                   "• Determination: <code>Sales Area + Customer Pricing Proc (CPP) + Doc Pricing Proc (DPP) = Pricing Procedure</code>.<br><br>" +
+                   "<b>Technical Architecture:</b><br>" +
+                   "• Transaction condition records: <code>KONV</code> (ECC) / <code>PRCD_ELEMENTS</code> (S/4HANA).<br>" +
+                   "• Master condition validity: <code>KONH</code> (Header), <code>KONP</code> (Items)."
+        },
+        {
+          title: "VOFM Pricing Routines & ABAP Logic",
+          type: "text",
+          content: "<b>Techno-Functional Deep Dive:</b><br>" +
+                   "• Reviewing requirement routines in <code>VOFM</code> (e.g., Routine 2 for active items).<br>" +
+                   "• Analyzing internal pricing communication structures: <code>TKOMK</code> (Header fields) and <code>TKOMP</code> (Item fields).<br>" +
+                   "• Step-by-step logic in transaction pricing calculation subroutine."
+        }
+      ]
+    },
+    {
+      main: "Module 4: Cross-Module Integrations (SD-MM & SD-FI)",
+      subtopics: [
+        {
+          title: "SD-FI Revenue Account Determination (VKOA)",
+          type: "text",
+          content: "<b>Functional Workflow:</b><br>" +
+                   "• Mapping billing revenue to general ledger accounts: <code>Application (V) + Condition Type (KOFI) + Chart of Accounts + Sales Org + Cust AAG + Mat AAG + Account Key (ERL/ERS)</code>.<br>" +
+                   "• Troubleshooting <code>VFX3</code>: Blocked billing documents due to posting period locks (OB52) or missing G/L mappings.<br><br>" +
+                   "<b>Technical Architecture:</b><br>" +
+                   "• Master configuration table: <code>C001</code> to <code>C005</code>.<br>" +
+                   "• Accounting document linkage: <code>BKPF</code> (FI Header) and <code>BSEG</code> (FI Line Items)."
+        },
+        {
+          title: "SD-MM Stock Transport Orders (STO) & Third-Party (TAS)",
+          type: "text",
+          content: "<b>Functional Mechanics:</b><br>" +
+                   "• Inter-company STO: MM Purchase Order (NB) → SD Replenishment Delivery (NLCC) → Goods Issue (Movement 643) → Goods Receipt (Movement 101).<br>" +
+                   "• Third-Party Drop-shipment (TAS): Sales Order → Auto PR creation → Purchase Order → Vendor Invoice (MIRO) → Customer Billing (VF01).<br><br>" +
+                   "<b>Technical Tables:</b><br>" +
+                   "• Purchasing links: <code>EBAN</code> (Requisitions), <code>EKKO</code> / <code>EKPO</code> (Purchase Orders)."
+        }
+      ]
+    },
+    {
+      main: "Module 5: WRICEF Functional Specifications (FS) Blueprinting",
+      subtopics: [
+        {
+          title: "Writing Enterprise Functional Specs for ABAP",
+          type: "text",
+          content: "<b>Functional Spec Structure:</b><br>" +
+                   "• Document header, business context, selection screen mockups, and processing flow.<br>" +
+                   "• Mapping source-to-target fields with table join logic (e.g., join <code>VBAK-VBELN</code> to <code>VBAP-VBELN</code>).<br>" +
+                   "• Defining error handling, edge cases, and unit test criteria."
+        },
+        {
+          title: "Interfaces & IDoc Processing (ORDERS05 / DESADV)",
+          type: "text",
+          content: "<b>Technical Specs:</b><br>" +
+                   "• Inbound Sales Orders via EDI: IDoc type <code>ORDERS05</code>, process code <code>ORDE</code>, function module <code>IDOC_INPUT_ORDERS</code>.<br>" +
+                   "• Segment mappings: <code>E1EDK01</code> (Header data), <code>E1EDP01</code> (Item data).<br>" +
+                   "• Monitoring and debugging failed IDocs using <code>WE02</code>, <code>WE05</code>, and <code>BD87</code>."
+        }
+      ]
+    },
+    {
+      main: "Module 6: SD User Exits, BAdIs & ABAP Debugging",
+      subtopics: [
+        {
+          title: "Standard SD User Exits in Program MV45AFZZ",
+          type: "text",
+          content: "<b>Technical Enhancements:</b><br>" +
+                   "• <code>USEREXIT_MOVE_FIELD_TO_VBAK</code>: Populating custom header fields before save.<br>" +
+                   "• <code>USEREXIT_MOVE_FIELD_TO_VBAP</code>: Defaulting custom item parameters.<br>" +
+                   "• <code>USEREXIT_SAVE_DOCUMENT_PREPARE</code>: Enforcing validation rules before committing database writes."
+        },
+        {
+          title: "Practical Debugging for Functional Consultants",
+          type: "text",
+          content: "<b>System Diagnostic Skills:</b><br>" +
+                   "• Activating debugger with <code>/h</code> on standard sales orders (VA01).<br>" +
+                   "• Setting dynamic breakpoints on statements (e.g., <code>MESSAGE</code> or <code>AUTHORITY-CHECK</code>).<br>" +
+                   "• Inspecting system return codes (<code>SY-SUBRC</code>) and analyzing pricing memory tables (<code>XKOMV</code>, <code>YVBAP</code>)."
+        }
+      ]
+    },
+    {
+      main: "Module 7: Real-World Production Tickets & Runbooks",
+      subtopics: [
+        {
+          title: "L2/L3 Incident Resolution Runbook",
+          type: "text",
+          content: "<b>Standard Operating Procedures:</b><br>" +
+                   "• <b>PGI Reversal:</b> Reversing Goods Issue with <code>VL09</code>, resetting picking status, and adjusting quantities.<br>" +
+                   "• <b>Pricing Redetermination:</b> Triggering pricing redetermination types (Type B, Type C) during billing.<br>" +
+                   "• <b>Document Flow Fixes:</b> Resolving overall status inconsistencies using standard correction programs."
+        },
+        {
+          title: "Transport Request (TR) Governance & Cutover",
+          type: "text",
+          content: "<b>Delivery Governance:</b><br>" +
+                   "• Customizing vs. Workbench Transport Requests in <code>SE01</code> / <code>SE09</code>.<br>" +
+                   "• Transport dependencies, sequencing order imports, resolving return code errors (RC 4, 8, 12), and cutover data upload."
+        }
+      ]
+    }
+  ]
+},
+    {
       id: "sap-fundamentals",
       tag: "FOUNDATIONS",
       badge: "Architecture & Basics",
